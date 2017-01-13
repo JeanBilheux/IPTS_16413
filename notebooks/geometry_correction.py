@@ -25,3 +25,8 @@ def factor_inho(x=0, inner_circle_r=1, outer_circle_r=1):
     _value = inhomogeneous_correction(x=x, 
                                       inner_circle_r=inner_circle_r, 
                                       outer_circle_r=outer_circle_r)
+    if x == 0:
+        return 1
+    if _value == 0:
+        _value = np.NaN
+    return (2*(outer_circle_r-inner_circle_r)/_value)
