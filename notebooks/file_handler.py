@@ -1,5 +1,6 @@
 import os
 import pyfits
+from PIL import Image
 import numpy as np
 import pickle
 import shutil
@@ -89,6 +90,20 @@ def export_file(data=[], output_folder='', base_file_name=''):
     hdulist.writeto(_full_output_file_name)
     hdulist.close()
     
+def read_tiff(list_files):
+    if type(list_files) is list:
+        data = []
+        for _file in list_files:
+            _data = np.asarray(Image.open(_file))
+            data.append(_data)
+        return data
+    else:
+        return np.asarray(Image.open(list_files))
+    
+def write_tiff(filename='', data=[]):
+    new_image = Image.fromarray(np.int16(data))
+    new_image.save(filename)
+    
 def make_or_reset_folder(folder_name):
     if os.path.exists(folder_name):
          shutil.rmtree(folder_name)
@@ -108,7 +123,19 @@ def remove_SummedImg_from_list(list_files):
         list_files_cleaned.append(_file)
     return list_files_cleaned
     
-
+def create_combine_mean_basename(input_file=''):
+    '''
+    input_file: 
+        /SNS/CG1Dimaging/IPTS/IPTS-1464/my_file_run_0010_001.tiff
+    
+    return:
+        my_file_run_0010_mean.tiff
+    '''
+    base_name = os.path.basename(input_file)
+    [_name, _ext] = os.path.splitext(base_name)
+    split_name = _name.split('_')
+    new_name = '_'.join(split_name[0:-1]) + '_mean' + _ext
+    return new_name
     
     
     
